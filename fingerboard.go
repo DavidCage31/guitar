@@ -8,7 +8,7 @@ import (
 type TuningType int
 
 const (
-	StandartTuning TuningType = iota
+	StandardTuning TuningType = iota
 )
 
 type Tuning []Note
@@ -24,7 +24,7 @@ func (t *Tuning) NoteNames() []string {
 
 func GetTuning(t TuningType) (Tuning, error) {
 	switch t {
-	case StandartTuning:
+	case StandardTuning:
 		return Tuning{
 			{
 				Name:   "E",

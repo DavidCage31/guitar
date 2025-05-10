@@ -9,13 +9,13 @@ import (
 
 func TestNewFingerBoard(t *testing.T) {
 	t.Run("valid frets", func(t *testing.T) {
-		fb, err := NewFingerBoard(StandartTuning, 24)
+		fb, err := NewFingerBoard(StandardTuning, 24)
 		assert.NoError(t, err)
 		assert.Equal(t, 24, fb.frets)
 	})
 
 	t.Run("negative frets", func(t *testing.T) {
-		_, err := NewFingerBoard(StandartTuning, -5)
+		_, err := NewFingerBoard(StandardTuning, -5)
 		assert.ErrorContains(t, err, "frets value can not be negative")
 	})
 
@@ -26,7 +26,7 @@ func TestNewFingerBoard(t *testing.T) {
 }
 
 func TestGetNotes(t *testing.T) {
-	fb, _ := NewFingerBoard(StandartTuning, 24)
+	fb, _ := NewFingerBoard(StandardTuning, 24)
 
 	testCases := []struct {
 		name         string

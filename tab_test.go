@@ -7,7 +7,7 @@ import (
 )
 
 func TestWriteSingleNote(t *testing.T) {
-	tun, _ := GetTuning(StandartTuning)
+	tun, _ := GetTuning(StandardTuning)
 	tuningNotes := tun.NoteNames()
 
 	testCases := []struct {
@@ -55,7 +55,7 @@ func TestWriteSingleNote(t *testing.T) {
 
 			var err error
 			for _, n := range tc.notes {
-				err = tb.WriteSingleNote(n)
+				err = tb.WriteNotes(n)
 				if err != nil {
 					break
 				}

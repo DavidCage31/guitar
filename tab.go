@@ -20,6 +20,12 @@ type tabBuilder struct {
 	tabStrings     []strings.Builder
 }
 
+type NotePositioner interface {
+	FretPosition() string
+	StringPosition() int
+	StartTime() float32
+}
+
 func NewTabBuilder(instrumentType InstrumentType, tuningNotes []string) (*tabBuilder, error) {
 	defaultTimeStep := float32(0.2)
 	switch instrumentType {
@@ -48,29 +54,37 @@ func (tb *tabBuilder) Tab() string {
 	return tab.String()
 }
 
-func (tb *tabBuilder) WriteSingleNote(n Note) error {
-	if !noteIsValid(n) {
-		return fmt.Errorf("invalid note: %s", n.Name)
-	}
-	if n.Time < tb.time {
-		return fmt.Errorf("note time %v precedes current time %v", n.Time, tb.time)
+func (tb *tabBuilder) WriteNotes(notes ...NotePositioner) error {
+	time := notes[0].StartTime()
+	for _, n := range notes {
+		if n.StartTime() < tb.time {
+			return fmt.Errorf("note time %v precedes current time %v", n.StartTime(), tb.time)
+		}
+		if n.StartTime() != time {
+			return fmt.Errorf("notes time are not equal")
+		}
 	}
 
-	silence := int((n.Time - tb.time) / tb.timeStep)
+	silence := int((time - tb.time) / tb.timeStep)
 	tb.addSilence(silence)
 	tb.time += tb.timeStep * (float32(silence + 1))
-	skipToOtherStrings := "-"
-	if n.Fret/10 > 0 {
-		skipToOtherStrings = "--"
+
+	maxLen := -1
+
+	for _, n := range notes {
+		tb.tabStrings[n.StringPosition()].WriteString(n.FretPosition())
+		if tb.tabStrings[n.StringPosition()].Len() > maxLen {
+			maxLen = tb.tabStrings[n.StringPosition()].Len()
+		}
 	}
 
 	for i := range tb.tabStrings {
-		if i == n.String {
-			tb.tabStrings[i].WriteString(fmt.Sprintf("%d", n.Fret))
-			continue
+		if tb.tabStrings[i].Len() < maxLen {
+			diffLen := maxLen - tb.tabStrings[i].Len()
+			for j := 0; j < diffLen; j++ {
+				tb.tabStrings[i].WriteString("-")
+			}
 		}
-
-		tb.tabStrings[i].WriteString(skipToOtherStrings)
 	}
 
 	// to escape situations like:
@@ -81,9 +95,9 @@ func (tb *tabBuilder) WriteSingleNote(n Note) error {
 }
 
 // TODO
-func (tb *tabBuilder) WriteChord() {
-
-}
+// func (tb *tabBuilder) WriteChord() {
+//
+// }
 
 func (tb *tabBuilder) addNotes(notes []string) error {
 	if len(notes) != len(tb.tabStrings) {

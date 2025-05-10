@@ -25,6 +25,18 @@ type Note struct {
 	Time float32
 }
 
+func (n Note) FretPosition() string {
+	return fmt.Sprintf("%d", n.Fret)
+}
+
+func (n Note) StringPosition() int {
+	return n.String
+}
+
+func (n Note) StartTime() float32 {
+	return n.Time
+}
+
 func (n *Note) AddFret() error {
 	found := -1
 
