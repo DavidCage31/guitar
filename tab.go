@@ -56,12 +56,17 @@ func (tb *tabBuilder) Tab() string {
 
 func (tb *tabBuilder) WriteNotes(notes ...NotePositioner) error {
 	time := notes[0].StartTime()
-	for _, n := range notes {
+	for i, n := range notes {
 		if n.StartTime() < tb.time {
-			return fmt.Errorf("note time %v precedes current time %v", n.StartTime(), tb.time)
+			return fmt.Errorf("note time %v precedes current time %v iteration %d note %+v",
+				n.StartTime(), tb.time, i, n)
 		}
 		if n.StartTime() != time {
 			return fmt.Errorf("notes time are not equal")
+		}
+		if n.StringPosition() >= len(tb.tabStrings) {
+			return fmt.Errorf("invalid string index %d, in tab builder only %d strings",
+				n.StringPosition(), len(tb.tabStrings))
 		}
 	}
 
@@ -72,9 +77,10 @@ func (tb *tabBuilder) WriteNotes(notes ...NotePositioner) error {
 	maxLen := -1
 
 	for _, n := range notes {
-		tb.tabStrings[n.StringPosition()].WriteString(n.FretPosition())
-		if tb.tabStrings[n.StringPosition()].Len() > maxLen {
-			maxLen = tb.tabStrings[n.StringPosition()].Len()
+		stringPos := n.StringPosition()
+		tb.tabStrings[stringPos].WriteString(n.FretPosition())
+		if tb.tabStrings[stringPos].Len() > maxLen {
+			maxLen = tb.tabStrings[stringPos].Len()
 		}
 	}
 
