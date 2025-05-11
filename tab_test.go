@@ -81,6 +81,11 @@ func TestWriteNotes(t *testing.T) {
 			},
 			expectError: true,
 		},
+		{
+			name:        "chord",
+			notes:       [][]NotePositioner{GetChord(G)},
+			expectedTab: "e|1-\nB|0-\nG|0-\nD|0-\nA|2-\nE|3-\n",
+		},
 	}
 
 	for _, tc := range testCases {
