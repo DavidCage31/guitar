@@ -1,32 +1,28 @@
 package guitar
 
 import (
-	"errors"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
 func TestNewFingerBoard(t *testing.T) {
+	standardTun, _ := GetTuning(StandardTuning, GuitarType)
 	t.Run("valid frets", func(t *testing.T) {
-		fb, err := NewFingerBoard(StandardTuning, 24)
+		fb, err := NewFingerBoard(standardTun, 24)
 		assert.NoError(t, err)
 		assert.Equal(t, 24, fb.frets)
 	})
 
 	t.Run("negative frets", func(t *testing.T) {
-		_, err := NewFingerBoard(StandardTuning, -5)
+		_, err := NewFingerBoard(standardTun, -5)
 		assert.ErrorContains(t, err, "frets value can not be negative")
-	})
-
-	t.Run("invalid tuning", func(t *testing.T) {
-		_, err := NewFingerBoard(TuningType(99), 12)
-		assert.ErrorIs(t, err, errors.ErrUnsupported)
 	})
 }
 
 func TestGetNotes(t *testing.T) {
-	fb, _ := NewFingerBoard(StandardTuning, 24)
+	standardTun, _ := GetTuning(StandardTuning, GuitarType)
+	fb, _ := NewFingerBoard(standardTun, 24)
 
 	testCases := []struct {
 		name         string
