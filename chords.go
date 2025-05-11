@@ -1,5 +1,28 @@
 package guitar
 
+import (
+	"strconv"
+	"strings"
+)
+
+func ParseChord(chordTab string) []NotePositioner {
+	notes := strings.Split(chordTab, " ")
+	chord := []NotePositioner{}
+
+	for i, note := range notes {
+		num, err := strconv.Atoi(note)
+		if err != nil {
+			if note != "-" {
+				return []NotePositioner{}
+			}
+			continue
+		}
+		chord = append(chord, Note{Fret: num, String: i})
+	}
+
+	return chord
+}
+
 const (
 	// A
 	//   e|0
@@ -295,6 +318,95 @@ const (
 	//   A|0
 	//   E|3
 	Gmaj7
+
+	// C5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|5
+	//   A|3
+	//   E|-
+	PowerC5
+	// D5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|7
+	//   A|5
+	//   E|-
+	PowerD5
+	// Db5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|6
+	//   A|4
+	//   E|-
+	PowerDb5
+	// Eb5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|3
+	//   A|1
+	//   E|-
+	PowerEb5
+	// E5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|-
+	//   A|2
+	//   E|0
+	PowerE5
+	// F5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|-
+	//   A|3
+	//   E|1
+	PowerF5
+	// Gb5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|-
+	//   A|4
+	//   E|2
+	PowerGb5
+	// G5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|-
+	//   A|5
+	//   E|3
+	PowerG5
+	// A5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|-
+	//   A|7
+	//   E|5
+	PowerA5
+	// Bb5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|3
+	//   A|1
+	//   E|-
+	PowerBb5
+	// B5
+	//   e|-
+	//   B|-
+	//   G|-
+	//   D|4
+	//   A|2
+	//   E|-
+	PowerB5
 )
 
 func GetChord(chordNum int) []NotePositioner {
@@ -600,6 +712,61 @@ func GetChord(chordNum int) []NotePositioner {
 			Note{Fret: 0, String: 3},
 			Note{Fret: 0, String: 4},
 			Note{Fret: 3, String: 5},
+		}
+	case PowerC5:
+		return []NotePositioner{
+			Note{Fret: 5, String: 3},
+			Note{Fret: 3, String: 4},
+		}
+	case PowerD5:
+		return []NotePositioner{
+			Note{Fret: 7, String: 3},
+			Note{Fret: 5, String: 4},
+		}
+	case PowerDb5:
+		return []NotePositioner{
+			Note{Fret: 6, String: 3},
+			Note{Fret: 4, String: 4},
+		}
+	case PowerEb5:
+		return []NotePositioner{
+			Note{Fret: 3, String: 3},
+			Note{Fret: 1, String: 4},
+		}
+	case PowerE5:
+		return []NotePositioner{
+			Note{Fret: 2, String: 4},
+			Note{Fret: 0, String: 5},
+		}
+	case PowerF5:
+		return []NotePositioner{
+			Note{Fret: 3, String: 4},
+			Note{Fret: 1, String: 5},
+		}
+	case PowerGb5:
+		return []NotePositioner{
+			Note{Fret: 4, String: 4},
+			Note{Fret: 2, String: 5},
+		}
+	case PowerG5:
+		return []NotePositioner{
+			Note{Fret: 5, String: 4},
+			Note{Fret: 3, String: 5},
+		}
+	case PowerA5:
+		return []NotePositioner{
+			Note{Fret: 7, String: 4},
+			Note{Fret: 5, String: 5},
+		}
+	case PowerBb5:
+		return []NotePositioner{
+			Note{Fret: 3, String: 3},
+			Note{Fret: 1, String: 4},
+		}
+	case PowerB5:
+		return []NotePositioner{
+			Note{Fret: 4, String: 3},
+			Note{Fret: 2, String: 4},
 		}
 	default:
 		return []NotePositioner{}
