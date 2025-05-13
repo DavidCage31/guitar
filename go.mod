@@ -1,4 +1,4 @@
-module github.com/DavidCage31/guitar
+module github.com/er-davo/guitar
 
 go 1.24.2
 
