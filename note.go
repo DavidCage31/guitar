@@ -61,6 +61,36 @@ func (n *Note) AddFret() error {
 	return nil
 }
 
+// TODO
+func (n *Note) Validate() error {
+	if !slices.Contains(notesChromo, n.Name) {
+		aliases := map[string]string{
+			"Db": "C#",
+			"Eb": "D#",
+			"Gb": "F#",
+			"Ab": "G#",
+			"Bb": "A#",
+			"D♯": "C#",
+			"E♯": "D#",
+			"G♯": "F#",
+			"A♯": "G#",
+			"B♯": "A#",
+			"D♭": "C#",
+			"E♭": "D#",
+			"G♭": "F#",
+			"A♭": "G#",
+			"B♭": "A#",
+		}
+		if normalized, ok := aliases[n.Name]; ok {
+			n.Name = normalized
+			return nil
+		} else {
+			return fmt.Errorf("invalid note name: %s", n.Name)
+		}
+	}
+	return nil
+}
+
 func (n *Note) calculateScore(target Note) float64 {
 	// Расстояние по горизонтали (лады)
 	fretDist := math.Abs(float64(n.Fret - target.Fret))

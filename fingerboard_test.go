@@ -7,7 +7,7 @@ import (
 )
 
 func TestNewFingerBoard(t *testing.T) {
-	standardTun, _ := GetTuning(StandardTuning, GuitarType)
+	standardTun, _ := ParseTuning(StandardTuning)
 	t.Run("valid frets", func(t *testing.T) {
 		fb, err := NewFingerBoard(standardTun, 24)
 		assert.NoError(t, err)
@@ -21,7 +21,7 @@ func TestNewFingerBoard(t *testing.T) {
 }
 
 func TestGetNotes(t *testing.T) {
-	standardTun, _ := GetTuning(StandardTuning, GuitarType)
+	standardTun, _ := ParseTuning(StandardTuning)
 	fb, _ := NewFingerBoard(standardTun, 24)
 
 	testCases := []struct {

@@ -1,15 +1,13 @@
 package guitar
 
 import (
-	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
-type TuningType int
-
 const (
-	StandardTuning TuningType = iota
+	StandardTuning = "E4 B3 G3 D3 A2 E2"
 )
 
 type Tuning []Note
@@ -23,72 +21,34 @@ func (t *Tuning) NoteNames() []string {
 	return names
 }
 
-func NewTuning(t []Note, instrument InstrumentType) (Tuning, error) {
-	for i := range t {
-		if !noteIsValid(t[i]) {
-			return Tuning{}, fmt.Errorf("invalid note %+v", t[i])
-		}
+func ParseTuning(notes string) (Tuning, error) {
+	if len(notes) == 0 {
+		return Tuning{}, fmt.Errorf("empty notes")
 	}
 
-	switch instrument {
-	case GuitarType:
-		if len(t) != 6 {
-			return Tuning{}, fmt.Errorf("invalid tuning for guitar! must be 6 notes")
+	tuningNotes := strings.Split(notes, " ")
+	tuning := make(Tuning, len(tuningNotes))
+
+	for stringNumber, stringNote := range tuningNotes {
+		name := stringNote[:len(stringNote)-1]
+		octave, err := strconv.Atoi(stringNote[len(stringNote)-1:])
+		if err != nil {
+			return Tuning{}, fmt.Errorf("invalid octave at note: %s", stringNote)
 		}
-	default:
-		return Tuning{}, fmt.Errorf("unsupported instrument")
+		note := Note{
+			Name:   name,
+			Octave: octave,
+			String: stringNumber,
+			Fret:   0,
+		}
+
+		err = note.Validate()
+		if err != nil {
+			return Tuning{}, err
+		}
+
+		tuning[stringNumber] = note
 	}
 
-	return append(Tuning{}, t...), nil
-}
-
-func GetTuning(t TuningType, instrumentType InstrumentType) (Tuning, error) {
-	switch instrumentType {
-	case GuitarType:
-		switch t {
-		case StandardTuning:
-			return Tuning{
-				{
-					Name:   "E",
-					Octave: 4,
-					Fret:   0,
-					String: 0,
-				},
-				{
-					Name:   "B",
-					Octave: 3,
-					Fret:   0,
-					String: 1,
-				},
-				{
-					Name:   "G",
-					Octave: 3,
-					Fret:   0,
-					String: 2,
-				},
-				{
-					Name:   "D",
-					Octave: 3,
-					Fret:   0,
-					String: 3,
-				},
-				{
-					Name:   "A",
-					Octave: 2,
-					Fret:   0,
-					String: 4,
-				},
-				{
-					Name:   "E",
-					Octave: 2,
-					Fret:   0,
-					String: 5,
-				},
-			}, nil
-		default:
-			return Tuning{}, errors.ErrUnsupported
-		}
-	default:
-		return Tuning{}, errors.ErrUnsupported
-	}
+	return tuning, nil
 }

@@ -7,7 +7,7 @@ import (
 )
 
 func TestWriteNotes(t *testing.T) {
-	tun, _ := GetTuning(StandardTuning, GuitarType)
+	tun, _ := ParseTuning(StandardTuning)
 	tuningNotes := tun.NoteNames()
 
 	testCases := []struct {
