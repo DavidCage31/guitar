@@ -27,7 +27,7 @@ func (fb *FingerBoard) GetTuningNotes() []string {
 // TODO
 // fix error
 // returns empty list for # notes
-func (fb FingerBoard) GetNotes(targetNote string, targetOctave int) Notes {
+func (fb *FingerBoard) GetNotes(targetNote string, targetOctave int) Notes {
 	notes := Notes{}
 	currentNote := Note{}
 

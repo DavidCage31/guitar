@@ -4,7 +4,6 @@ import (
 	"errors"
 	"fmt"
 	"math"
-	"slices"
 )
 
 const (
@@ -61,32 +60,35 @@ func (n *Note) AddFret() error {
 	return nil
 }
 
-// TODO
 func (n *Note) Validate() error {
-	if !slices.Contains(notesChromo, n.Name) {
-		aliases := map[string]string{
-			"Db": "C#",
-			"Eb": "D#",
-			"Gb": "F#",
-			"Ab": "G#",
-			"Bb": "A#",
-			"D♯": "C#",
-			"E♯": "D#",
-			"G♯": "F#",
-			"A♯": "G#",
-			"B♯": "A#",
-			"D♭": "C#",
-			"E♭": "D#",
-			"G♭": "F#",
-			"A♭": "G#",
-			"B♭": "A#",
-		}
-		if normalized, ok := aliases[n.Name]; ok {
-			n.Name = normalized
-			return nil
-		} else {
-			return fmt.Errorf("invalid note name: %s", n.Name)
-		}
+	switch n.Name {
+	case "Db", "D♭":
+		n.Name = "C#"
+	case "Eb", "E♭":
+		n.Name = "D#"
+	case "Gb", "G♭":
+		n.Name = "F#"
+	case "Ab", "A♭":
+		n.Name = "G#"
+	case "Bb", "B♭":
+		n.Name = "A#"
+
+	case "D♯":
+		n.Name = "C#"
+	case "E♯":
+		n.Name = "D#"
+	case "G♯":
+		n.Name = "F#"
+	case "A♯":
+		n.Name = "G#"
+	case "B♯":
+		n.Name = "A#"
+
+	case "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B":
+		return nil
+
+	default:
+		return fmt.Errorf("invalid note name: %s", n.Name)
 	}
 	return nil
 }

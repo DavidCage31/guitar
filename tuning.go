@@ -8,6 +8,7 @@ import (
 
 const (
 	StandardTuning = "E4 B3 G3 D3 A2 E2"
+	DropD          = "E4 B3 G3 D3 A2 D2"
 )
 
 type Tuning []Note
