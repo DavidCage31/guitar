@@ -90,7 +90,7 @@ func TestWriteNotes(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			tb, _ := NewTabBuilder(GuitarType, tuningNotes)
+			tb, _ := NewTabBuilder(tuningNotes)
 
 			var err error
 			for _, n := range tc.notes {

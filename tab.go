@@ -1,23 +1,15 @@
 package guitar
 
 import (
-	"errors"
 	"fmt"
 	"strings"
-)
-
-type InstrumentType int
-
-const (
-	GuitarType InstrumentType = iota
 )
 
 type tabBuilder struct {
 	time     float32
 	timeStep float32
 
-	instrumentType InstrumentType
-	tabStrings     []strings.Builder
+	tabStrings []strings.Builder
 }
 
 type NotePositioner interface {
@@ -26,22 +18,22 @@ type NotePositioner interface {
 	StartTime() float32
 }
 
-func NewTabBuilder(instrumentType InstrumentType, tuningNotes []string) (*tabBuilder, error) {
-	defaultTimeStep := float32(0.2)
-	switch instrumentType {
-	case GuitarType:
-		tb := tabBuilder{
-			time:           0.0,
-			timeStep:       defaultTimeStep,
-			instrumentType: instrumentType,
-			tabStrings:     make([]strings.Builder, 6),
-		}
-		tb.addNotes(tuningNotes)
-
-		return &tb, nil
-	default:
-		return nil, errors.ErrUnsupported
+func NewTabBuilder(tuningNotes []string, opts ...TabOption) (*tabBuilder, error) {
+	tb := &tabBuilder{
+		time:       0,
+		timeStep:   0.2,
+		tabStrings: make([]strings.Builder, len(tuningNotes)),
 	}
+
+	for _, opt := range opts {
+		opt(tb)
+	}
+
+	if err := tb.addNotes(tuningNotes); err != nil {
+		return nil, err
+	}
+
+	return tb, nil
 }
 
 func (tb *tabBuilder) Tab() string {
@@ -100,11 +92,6 @@ func (tb *tabBuilder) WriteNotes(notes ...NotePositioner) error {
 	return nil
 }
 
-// TODO
-// func (tb *tabBuilder) WriteChord() {
-//
-// }
-
 func (tb *tabBuilder) addNotes(notes []string) error {
 	if len(notes) != len(tb.tabStrings) {
 		return fmt.Errorf("invalid tuning notes count")
@@ -121,5 +108,19 @@ func (tb *tabBuilder) addSilence(n int) {
 		for i := range len(tb.tabStrings) {
 			tb.tabStrings[i].WriteString("-")
 		}
+	}
+}
+
+type TabOption func(*tabBuilder)
+
+func WithTimeStep(step float32) TabOption {
+	return func(tb *tabBuilder) {
+		tb.timeStep = step
+	}
+}
+
+func WithDefaultTimeStep() TabOption {
+	return func(tb *tabBuilder) {
+		tb.timeStep = 0.2
 	}
 }

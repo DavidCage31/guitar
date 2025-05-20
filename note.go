@@ -134,7 +134,3 @@ func (n *Notes) ClosestTo(target Note) (Note, error) {
 
 	return closest, nil
 }
-
-func noteIsValid(n Note) bool {
-	return slices.Contains(notesChromo, n.Name)
-}
