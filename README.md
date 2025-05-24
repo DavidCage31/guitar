@@ -1,6 +1,6 @@
 # 🎸 Guitar Tab Library for Go
 
-[![Tests](https://github.com/er-davo/guitar/actions/workflows/go.yml/badge.svg)](https://github.com/er-davo/guitar/actions)
+[![Tests](https://github.com/er-davo/guitar/actions/workflows/go.yaml/badge.svg)](https://github.com/er-davo/guitar/actions/workflows/go.yaml)
 
 A Go library for generating guitar tabs, working with chords, notes, and tunings.
 
