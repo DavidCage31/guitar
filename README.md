@@ -1,8 +1,8 @@
-# Guitar Tab Library for Go
-
-Go-пакет для генерации гитарных табулатур, работы с аккордами и нотами.
+# 🎸 Guitar Tab Library for Go
 
 [![Tests](https://github.com/er-davo/guitar/actions/workflows/go-tests.yml/badge.svg)](https://github.com/er-davo/guitar/actions)
+
+A Go library for generating guitar tabs, working with chords, notes, and tunings.
 
 ## Installation
 ```bash
@@ -35,7 +35,12 @@ func main() {
 	tab.WriteNotes(guitar.GetChord(guitar.Am)...)
 
 	// Add a slide from fret 5 to 7 on the G string
-	tab.WriteNotes(guitar.Slide{FretStart: 5, FretEnd: 7, String: 2, Time: 0.5})
+	tab.WriteNotes(guitar.Slide{
+		FretStart: 5,
+		FretEnd: 7,
+		String: 2, // G string
+		Time: 0.5,
+	})
 
 	fmt.Println(tab.Tab())
 }
