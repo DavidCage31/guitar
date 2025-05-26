@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-type tabBuilder struct {
+type TabWriter struct {
 	time     float32
 	timeStep float32
 
@@ -13,13 +13,13 @@ type tabBuilder struct {
 }
 
 type NotePositioner interface {
-	FretPosition() string
-	StringPosition() int
+	TabSymbol() string
+	StringNumber() int
 	StartTime() float32
 }
 
-func NewTabBuilder(tuningNotes []string, opts ...TabOption) (*tabBuilder, error) {
-	tb := &tabBuilder{
+func NewTabWriter(tuningNotes []string, opts ...TabOption) (*TabWriter, error) {
+	tb := &TabWriter{
 		time:       0,
 		timeStep:   0.2,
 		tabStrings: make([]strings.Builder, len(tuningNotes)),
@@ -36,7 +36,7 @@ func NewTabBuilder(tuningNotes []string, opts ...TabOption) (*tabBuilder, error)
 	return tb, nil
 }
 
-func (tb *tabBuilder) Tab() string {
+func (tb *TabWriter) Tab() string {
 	tab := strings.Builder{}
 
 	for i := range len(tb.tabStrings) {
@@ -46,7 +46,7 @@ func (tb *tabBuilder) Tab() string {
 	return tab.String()
 }
 
-func (tb *tabBuilder) WriteNotes(notes ...NotePositioner) error {
+func (tb *TabWriter) WriteNotes(notes ...NotePositioner) error {
 	time := notes[0].StartTime()
 	for i, n := range notes {
 		if n.StartTime() < tb.time {
@@ -56,9 +56,9 @@ func (tb *tabBuilder) WriteNotes(notes ...NotePositioner) error {
 		if n.StartTime() != time {
 			return fmt.Errorf("notes time are not equal")
 		}
-		if n.StringPosition() >= len(tb.tabStrings) {
+		if n.StringNumber() >= len(tb.tabStrings) {
 			return fmt.Errorf("invalid string index %d, in tab builder only %d strings",
-				n.StringPosition(), len(tb.tabStrings))
+				n.StringNumber(), len(tb.tabStrings))
 		}
 	}
 
@@ -69,8 +69,8 @@ func (tb *tabBuilder) WriteNotes(notes ...NotePositioner) error {
 	maxLen := -1
 
 	for _, n := range notes {
-		stringPos := n.StringPosition()
-		tb.tabStrings[stringPos].WriteString(n.FretPosition())
+		stringPos := n.StringNumber()
+		tb.tabStrings[stringPos].WriteString(n.TabSymbol())
 		if tb.tabStrings[stringPos].Len() > maxLen {
 			maxLen = tb.tabStrings[stringPos].Len()
 		}
@@ -92,7 +92,7 @@ func (tb *tabBuilder) WriteNotes(notes ...NotePositioner) error {
 	return nil
 }
 
-func (tb *tabBuilder) addNotes(notes []string) error {
+func (tb *TabWriter) addNotes(notes []string) error {
 	if len(notes) != len(tb.tabStrings) {
 		return fmt.Errorf("invalid tuning notes count")
 	}
@@ -103,7 +103,7 @@ func (tb *tabBuilder) addNotes(notes []string) error {
 	return nil
 }
 
-func (tb *tabBuilder) addSilence(n int) {
+func (tb *TabWriter) addSilence(n int) {
 	for range n {
 		for i := range len(tb.tabStrings) {
 			tb.tabStrings[i].WriteString("-")
@@ -111,16 +111,16 @@ func (tb *tabBuilder) addSilence(n int) {
 	}
 }
 
-type TabOption func(*tabBuilder)
+type TabOption func(*TabWriter)
 
 func WithTimeStep(step float32) TabOption {
-	return func(tb *tabBuilder) {
+	return func(tb *TabWriter) {
 		tb.timeStep = step
 	}
 }
 
 func WithDefaultTimeStep() TabOption {
-	return func(tb *tabBuilder) {
+	return func(tb *TabWriter) {
 		tb.timeStep = 0.2
 	}
 }

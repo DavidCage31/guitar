@@ -31,14 +31,14 @@ type Slide struct {
 	Time float32
 }
 
-func (s Slide) FretPosition() string {
+func (s Slide) TabSymbol() string {
 	if s.FretStart == -1 {
 		return fmt.Sprintf("/%d", s.FretEnd)
 	}
 	return fmt.Sprintf("%d/%d", s.FretStart, s.FretEnd)
 }
 
-func (s Slide) StringPosition() int {
+func (s Slide) StringNumber() int {
 	return s.String
 }
 
@@ -55,11 +55,11 @@ type HammerOn struct {
 	Time float32
 }
 
-func (h HammerOn) FretPosition() string {
+func (h HammerOn) TabSymbol() string {
 	return fmt.Sprintf("%dh%d", h.FretFrom, h.FretTo)
 }
 
-func (h HammerOn) StringPosition() int {
+func (h HammerOn) StringNumber() int {
 	return h.String
 }
 

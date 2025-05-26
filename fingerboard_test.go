@@ -70,7 +70,7 @@ func TestGetNotes(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			notes := fb.GetNotes(tc.targetNote, tc.targetOctave)
+			notes := fb.FindNotes(tc.targetNote, tc.targetOctave)
 
 			assert.Equal(t, len(tc.expected), len(notes), "unexpected number of notes")
 			for _, expectedNote := range tc.expected {

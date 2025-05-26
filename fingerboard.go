@@ -24,10 +24,10 @@ func (fb *FingerBoard) GetTuningNotes() []string {
 	return fb.tuning.NoteNames()
 }
 
-// TODO
-// fix error
-// returns empty list for # notes
-func (fb *FingerBoard) GetNotes(targetNote string, targetOctave int) Notes {
+func (fb *FingerBoard) FindNotes(targetNote string, targetOctave int) Notes {
+	// TODO
+	// fix error
+	// returns empty list for # notes
 	notes := Notes{}
 	currentNote := Note{}
 

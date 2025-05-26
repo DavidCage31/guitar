@@ -65,8 +65,8 @@ func TestParseChord(t *testing.T) {
 
 			assert.Equal(t, len(tc.expected), len(result), "Number of parsed notes mismatch")
 			for i, note := range tc.expected {
-				assert.Equal(t, note.FretPosition(), result[i].FretPosition(), "Fret mismatch")
-				assert.Equal(t, note.StringPosition(), result[i].StringPosition(), "String mismatch")
+				assert.Equal(t, note.TabSymbol(), result[i].TabSymbol(), "Fret mismatch")
+				assert.Equal(t, note.StringNumber(), result[i].StringNumber(), "String mismatch")
 			}
 		})
 	}

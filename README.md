@@ -1,5 +1,4 @@
 # 🎸 Guitar Tab Library for Go
-
 [![Tests](https://github.com/er-davo/guitar/actions/workflows/go.yaml/badge.svg)](https://github.com/er-davo/guitar/actions/workflows/go.yaml)
 
 A Go library for generating guitar tabs, working with chords, notes, and tunings.
@@ -8,7 +7,6 @@ A Go library for generating guitar tabs, working with chords, notes, and tunings
 ```bash
 go get github.com/er-davo/guitar
 ```
-
 ## Features
 - Tab Generation: Build ASCII tabs from notes/chords.
 - Chord Library: 50+ predefined chords (A, Bm, C7, etc.).
@@ -17,7 +15,7 @@ go get github.com/er-davo/guitar
 - Note Calculations: Find closest fret positions, handle enharmonics (e.g., Gb → F#).
 
 # Quick start
-1. Generate tab
+## 1. Generate tab
 ```go
 package main
 
@@ -29,7 +27,7 @@ import (
 func main() {
 	// Create a tab builder in Standard Tuning
 	tuning, _ := guitar.ParseTuning(guitar.StandardTuning)
-	tab, _ := guitar.NewTabBuilder(tuning.NoteNames())
+	tab, _ := guitar.NewTabWriter(tuning.NoteNames())
 
 	// Add an A minor chord
 	tab.WriteNotes(guitar.GetChord(guitar.Am)...)
@@ -54,13 +52,13 @@ D|2------
 A|0------
 E|-------
 ```
-2. Find Notes on the Fretboard
+## 2. Find Notes on the Fretboard
 ```go
 fb, _ := guitar.NewFingerBoard(tuning, 12) // 12-fret board
-notes := fb.GetNotes("C#", 3)              // Find all C#3 notes
+notes := fb.FindNotes("C#", 3)              // Find all C#3 notes
 // Returns [{C# 3 4 4} {C# 3 9 5}]
 ```
-3. Parse Custom Chords
+## 3. Parse Custom Chords
 ```go
 chord := guitar.ParseChord("0 2 2 2 0 -") // A major chord
 // Returns [0, 2, 2, 2, 0] (frets for each string)

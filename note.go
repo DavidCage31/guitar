@@ -24,11 +24,11 @@ type Note struct {
 	Time float32
 }
 
-func (n Note) FretPosition() string {
+func (n Note) TabSymbol() string {
 	return fmt.Sprintf("%d", n.Fret)
 }
 
-func (n Note) StringPosition() int {
+func (n Note) StringNumber() int {
 	return n.String
 }
 

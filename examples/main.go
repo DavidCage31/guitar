@@ -9,7 +9,7 @@ import (
 func main() {
 	// Create a tab builder in Standard Tuning
 	tuning, _ := guitar.ParseTuning(guitar.StandardTuning)
-	tab, _ := guitar.NewTabBuilder(tuning.NoteNames())
+	tab, _ := guitar.NewTabWriter(tuning.NoteNames())
 
 	// Add an A minor chord
 	tab.WriteNotes(guitar.GetChord(guitar.Am)...)
@@ -20,7 +20,7 @@ func main() {
 	fmt.Println(tab.Tab())
 
 	fb, _ := guitar.NewFingerBoard(tuning, 12) // 12-fret board
-	notes := fb.GetNotes("C#", 3)              // Find all C#3 notes
+	notes := fb.FindNotes("C#", 3)             // Find all C#3 notes
 	// Returns [{C# 3 4 4} {C# 3 9 5}]
 	fmt.Println(notes)
 }
