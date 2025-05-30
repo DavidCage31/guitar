@@ -10,13 +10,13 @@ func TestParseChord(t *testing.T) {
 	testCases := []struct {
 		name        string
 		chordTab    string
-		expected    []NotePositioner
+		expected    []Playable
 		expectError bool
 	}{
 		{
 			name:     "Standard A chord",
 			chordTab: "0 2 2 2 0 -",
-			expected: []NotePositioner{
+			expected: []Playable{
 				Note{Fret: 0, String: 0},
 				Note{Fret: 2, String: 1},
 				Note{Fret: 2, String: 2},
@@ -27,7 +27,7 @@ func TestParseChord(t *testing.T) {
 		{
 			name:     "Power chord E5",
 			chordTab: "- - - 2 0 -",
-			expected: []NotePositioner{
+			expected: []Playable{
 				Note{Fret: 2, String: 3},
 				Note{Fret: 0, String: 4},
 			},
@@ -35,7 +35,7 @@ func TestParseChord(t *testing.T) {
 		{
 			name:     "Chord with skipped strings (mixed)",
 			chordTab: "3 - 0 1 - 3",
-			expected: []NotePositioner{
+			expected: []Playable{
 				Note{Fret: 3, String: 0},
 				Note{Fret: 0, String: 2},
 				Note{Fret: 1, String: 3},

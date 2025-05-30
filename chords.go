@@ -5,15 +5,15 @@ import (
 	"strings"
 )
 
-func ParseChord(chordTab string, time float32) []NotePositioner {
+func ParseChord(chordTab string, time float32) []Playable {
 	notes := strings.Split(chordTab, " ")
-	chord := []NotePositioner{}
+	chord := []Playable{}
 
 	for i, note := range notes {
 		num, err := strconv.Atoi(note)
 		if err != nil {
 			if note != "-" {
-				return []NotePositioner{}
+				return []Playable{}
 			}
 			continue
 		}

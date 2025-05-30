@@ -12,11 +12,17 @@ type TabWriter struct {
 	tabStrings []strings.Builder
 }
 
-type NotePositioner interface {
+type Playable interface {
 	TabSymbol() string
 	StringNumber() int
 	StartTime() float32
 }
+
+type Playables []Playable
+
+func (a Playables) Len() int           { return len(a) }
+func (a Playables) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a Playables) Less(i, j int) bool { return a[i].StartTime() < a[j].StartTime() }
 
 func NewTabWriter(tuningNotes []string, opts ...TabOption) (*TabWriter, error) {
 	tb := &TabWriter{
@@ -46,7 +52,7 @@ func (tb *TabWriter) Tab() string {
 	return tab.String()
 }
 
-func (tb *TabWriter) WriteNotes(notes ...NotePositioner) error {
+func (tb *TabWriter) WriteNotes(notes Playables) error {
 	time := notes[0].StartTime()
 	for i, n := range notes {
 		if n.StartTime() < tb.time {
@@ -87,6 +93,43 @@ func (tb *TabWriter) WriteNotes(notes ...NotePositioner) error {
 
 	// to escape situations like:
 	// E|-3--123-----
+	tb.addSilence(1)
+
+	return nil
+}
+
+func (tb *TabWriter) WriteNote(note Playable) error {
+	if note.StartTime() < tb.time {
+		return fmt.Errorf("note time %v precedes current time %v note %+v",
+			note.StartTime(), tb.time, note)
+	}
+
+	silence := int((note.StartTime() - tb.time) / tb.timeStep)
+	tb.addSilence(silence)
+	tb.time += tb.timeStep * (float32(silence + 1))
+
+	if note.StringNumber() >= len(tb.tabStrings) {
+		return fmt.Errorf("invalid string index %d, in tab builder only %d strings",
+			note.StringNumber(), len(tb.tabStrings))
+	}
+
+	stringPos := note.StringNumber()
+	tb.tabStrings[stringPos].WriteString(note.TabSymbol())
+
+	maxLen := tb.tabStrings[stringPos].Len()
+
+	for i := range tb.tabStrings {
+		if i == stringPos {
+			continue
+		}
+		if tb.tabStrings[i].Len() < maxLen {
+			diffLen := maxLen - tb.tabStrings[i].Len()
+			for j := 0; j < diffLen; j++ {
+				tb.tabStrings[i].WriteString("-")
+			}
+		}
+	}
+
 	tb.addSilence(1)
 
 	return nil
