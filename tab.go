@@ -2,6 +2,7 @@ package guitar
 
 import (
 	"fmt"
+	"sort"
 	"strings"
 )
 
@@ -17,12 +18,6 @@ type Playable interface {
 	StringNumber() int
 	StartTime() float32
 }
-
-type Playables []Playable
-
-func (a Playables) Len() int           { return len(a) }
-func (a Playables) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a Playables) Less(i, j int) bool { return a[i].StartTime() < a[j].StartTime() }
 
 func NewTabWriter(tuningNotes []string, opts ...TabOption) (*TabWriter, error) {
 	tb := &TabWriter{
@@ -52,84 +47,58 @@ func (tb *TabWriter) Tab() string {
 	return tab.String()
 }
 
-func (tb *TabWriter) WriteNotes(notes Playables) error {
+func (tb *TabWriter) WriteNotes(notes ...Playable) error {
+
+	sort.Slice(notes, func(i, j int) bool { return notes[i].StartTime() < notes[j].StartTime() })
+
 	time := notes[0].StartTime()
-	for i, n := range notes {
-		if n.StartTime() < tb.time {
-			return fmt.Errorf("note time %v precedes current time %v iteration %d note %+v",
-				n.StartTime(), tb.time, i, n)
-		}
-		if n.StartTime() != time {
-			return fmt.Errorf("notes time are not equal")
-		}
+	if time < tb.time {
+		return fmt.Errorf("note time %v precedes current time %v",
+			time, tb.time)
+	}
+
+	for _, n := range notes {
 		if n.StringNumber() >= len(tb.tabStrings) {
 			return fmt.Errorf("invalid string index %d, in tab builder only %d strings",
 				n.StringNumber(), len(tb.tabStrings))
 		}
 	}
 
-	silence := int((time - tb.time) / tb.timeStep)
-	tb.addSilence(silence)
-	tb.time += tb.timeStep * (float32(silence + 1))
+	for i := 0; i < len(notes); i++ {
+		time = notes[i].StartTime()
+		maxLen := -1
+		minLen := tb.tabStrings[0].Len()
 
-	maxLen := -1
+		silence := int((time - tb.time) / tb.timeStep)
+		tb.addSilence(silence)
+		tb.time += tb.timeStep * (float32(silence + 1))
 
-	for _, n := range notes {
-		stringPos := n.StringNumber()
-		tb.tabStrings[stringPos].WriteString(n.TabSymbol())
-		if tb.tabStrings[stringPos].Len() > maxLen {
-			maxLen = tb.tabStrings[stringPos].Len()
+		for i < len(notes) && time == notes[i].StartTime() {
+			stringPos := notes[i].StringNumber()
+
+			if tb.tabStrings[stringPos].Len() != minLen {
+				return fmt.Errorf("can not write more 2 or more notes with equal time: %f to 1 string", time)
+			}
+
+			tb.tabStrings[stringPos].WriteString(notes[i].TabSymbol())
+			if tb.tabStrings[stringPos].Len() > maxLen {
+				maxLen = tb.tabStrings[stringPos].Len()
+			}
+			i++
 		}
-	}
 
-	for i := range tb.tabStrings {
-		if tb.tabStrings[i].Len() < maxLen {
-			diffLen := maxLen - tb.tabStrings[i].Len()
-			for j := 0; j < diffLen; j++ {
-				tb.tabStrings[i].WriteString("-")
+		for i := range tb.tabStrings {
+			if tb.tabStrings[i].Len() < maxLen {
+				diffLen := maxLen - tb.tabStrings[i].Len()
+				for j := 0; j < diffLen; j++ {
+					tb.tabStrings[i].WriteString("-")
+				}
 			}
 		}
 	}
 
 	// to escape situations like:
 	// E|-3--123-----
-	tb.addSilence(1)
-
-	return nil
-}
-
-func (tb *TabWriter) WriteNote(note Playable) error {
-	if note.StartTime() < tb.time {
-		return fmt.Errorf("note time %v precedes current time %v note %+v",
-			note.StartTime(), tb.time, note)
-	}
-
-	silence := int((note.StartTime() - tb.time) / tb.timeStep)
-	tb.addSilence(silence)
-	tb.time += tb.timeStep * (float32(silence + 1))
-
-	if note.StringNumber() >= len(tb.tabStrings) {
-		return fmt.Errorf("invalid string index %d, in tab builder only %d strings",
-			note.StringNumber(), len(tb.tabStrings))
-	}
-
-	stringPos := note.StringNumber()
-	tb.tabStrings[stringPos].WriteString(note.TabSymbol())
-
-	maxLen := tb.tabStrings[stringPos].Len()
-
-	for i := range tb.tabStrings {
-		if i == stringPos {
-			continue
-		}
-		if tb.tabStrings[i].Len() < maxLen {
-			diffLen := maxLen - tb.tabStrings[i].Len()
-			for j := 0; j < diffLen; j++ {
-				tb.tabStrings[i].WriteString("-")
-			}
-		}
-	}
-
 	tb.addSilence(1)
 
 	return nil
