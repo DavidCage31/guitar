@@ -9,7 +9,6 @@ go get github.com/er-davo/guitar
 ```
 ## Features
 - Tab Generation: Build ASCII tabs from notes/chords.
-- Chord Library: 50+ predefined chords (A, Bm, C7, etc.).
 - Tuning Support: Standard, Drop D, and custom tunings.
 - Advanced Techniques: Slides (5/7), hammer-ons (2h4), pull-offs(5p3). Harmonics (<12>).
 - Note Calculations: Find closest fret positions, handle enharmonics (e.g., Gb → F#).

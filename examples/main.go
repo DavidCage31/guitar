@@ -12,7 +12,7 @@ func main() {
 	tab, _ := guitar.NewTabWriter(tuning.NoteNames())
 
 	// Add an A minor chord
-	tab.WriteNotes(guitar.GetChord(guitar.Am)...)
+	tab.WriteNotes(guitar.ParseChord("0 1 2 2 0 -")...)
 
 	// Add a slide from fret 5 to 7 on the G string
 	tab.WriteNotes(guitar.Slide{FretStart: 5, FretEnd: 7, String: 2, Time: 0.5})
