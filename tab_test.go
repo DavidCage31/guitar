@@ -83,7 +83,7 @@ func TestWriteNotes(t *testing.T) {
 		},
 		{
 			name:        "chord",
-			notes:       [][]NotePositioner{ParseChord("1 0 0 0 2 3")},
+			notes:       [][]NotePositioner{ParseChord("1 0 0 0 2 3", 0)},
 			expectedTab: "e|1-\nB|0-\nG|0-\nD|0-\nA|2-\nE|3-\n",
 		},
 	}

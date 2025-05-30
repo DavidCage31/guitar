@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func ParseChord(chordTab string) []NotePositioner {
+func ParseChord(chordTab string, time float32) []NotePositioner {
 	notes := strings.Split(chordTab, " ")
 	chord := []NotePositioner{}
 
@@ -17,7 +17,7 @@ func ParseChord(chordTab string) []NotePositioner {
 			}
 			continue
 		}
-		chord = append(chord, Note{Fret: num, String: i})
+		chord = append(chord, Note{Fret: num, String: i, Time: time})
 	}
 
 	return chord

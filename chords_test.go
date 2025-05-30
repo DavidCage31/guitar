@@ -56,7 +56,7 @@ func TestParseChord(t *testing.T) {
 
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			result := ParseChord(tc.chordTab)
+			result := ParseChord(tc.chordTab, 0)
 
 			if tc.expectError {
 				assert.Empty(t, result, "Expected error but got notes")
