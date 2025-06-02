@@ -90,9 +90,7 @@ func (tb *TabWriter) WriteNotes(notes ...Playable) error {
 		for i := range tb.tabStrings {
 			if tb.tabStrings[i].Len() < maxLen {
 				diffLen := maxLen - tb.tabStrings[i].Len()
-				for j := 0; j < diffLen; j++ {
-					tb.tabStrings[i].WriteString("-")
-				}
+				tb.tabStrings[i].WriteString(strings.Repeat("-", diffLen))
 			}
 		}
 	}
@@ -116,10 +114,8 @@ func (tb *TabWriter) addNotes(notes []string) error {
 }
 
 func (tb *TabWriter) addSilence(n int) {
-	for range n {
-		for i := range len(tb.tabStrings) {
-			tb.tabStrings[i].WriteString("-")
-		}
+	for i := range len(tb.tabStrings) {
+		tb.tabStrings[i].WriteString(strings.Repeat("-", n))
 	}
 }
 
