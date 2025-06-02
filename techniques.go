@@ -10,7 +10,7 @@ type Harmonic struct {
 	Time float32
 }
 
-func (h Harmonic) FretPosition() string {
+func (h Harmonic) TabSymbol() string {
 	return fmt.Sprintf("<%d>", h.Fret)
 }
 
@@ -76,11 +76,11 @@ type PullOff struct {
 	Time float32
 }
 
-func (p PullOff) FretPosition() string {
+func (p PullOff) TabSymbol() string {
 	return fmt.Sprintf("%dp%d", p.FretFrom, p.FretTo)
 }
 
-func (p PullOff) StringPosition() int {
+func (p PullOff) StringNumber() int {
 	return p.String
 }
 
