@@ -35,11 +35,6 @@ func main() {
 	tab.WriteNotes(guitar.Slide{FretStart: 5, FretEnd: 7, String: 2, Time: 0.5})
 
 	fmt.Println(tab.Tab())
-
-	fb, _ := guitar.NewFingerBoard(tuning, 12) // 12-fret board
-	notes := fb.FindNotes("C#", 3)             // Find all C#3 notes
-	// Returns [{C# 3 4 4} {C# 3 9 5}]
-	fmt.Println(notes)
 }
 ```
 Output
